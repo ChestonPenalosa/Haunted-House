@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -19,10 +20,16 @@ public class GameEnding : MonoBehaviour
     private VisualElement m_EndScreen;
     private VisualElement m_CaughtScreen;
 
+    public float timeRemaining = 120f;
+    public bool timerRunning = false;
+    public TextMeshProUGUI timeText;
+
     void Start()
     {
         m_EndScreen = uiDocument.rootVisualElement.Q<VisualElement>("EndScreen");
         m_CaughtScreen = uiDocument.rootVisualElement.Q<VisualElement>("CaughtScreen");
+
+        timerRunning = true;
     }
 
     void OnTriggerEnter(Collider other)
@@ -47,6 +54,22 @@ public class GameEnding : MonoBehaviour
         else if (m_IsPlayerCaught)
         {
             EndLevel(m_CaughtScreen, true, caughtAudio);
+        }
+
+        timeText.text = "Time Left: " + timeRemaining.ToString("F0");
+        if (timerRunning == true)
+        {
+            if(timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+            }
+            else
+            {
+                timeRemaining = 0;
+                timerRunning = false;
+                CaughtPlayer();
+
+            }
         }
     }
 
